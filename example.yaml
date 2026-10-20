@@ -1,0 +1,7 @@
+name: "CUPS Printer"
+date: 2026-10-20
+author: Urs Hofer
+technology: "P5.js"
+maincategory: code-samples
+category: output
+related: Servers_Printer
