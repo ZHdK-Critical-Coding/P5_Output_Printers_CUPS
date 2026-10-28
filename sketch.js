@@ -54,6 +54,33 @@ async function printCanvas() {
   await communicateWithPrinter(blob)
 }
 
+// Currently unused: fetch an image and send its Blob directly to the printer.
+async function printImageFromUrl(url) {
+  const response = await fetch(url)
+  if (!response.ok) throw new Error(`Image request failed: ${response.status}`)
+  await communicateWithPrinter(await response.blob())
+}
+
+// Currently unused: convert a loaded DOM image element to a PNG Blob and print it.
+async function printImageElement(imageElement) {
+  if (!imageElement.complete || !imageElement.naturalWidth) {
+    throw new Error('Image element is not loaded')
+  }
+
+  const imageCanvas = document.createElement('canvas')
+  imageCanvas.width = imageElement.naturalWidth
+  imageCanvas.height = imageElement.naturalHeight
+  imageCanvas.getContext('2d').drawImage(imageElement, 0, 0)
+
+  const blob = await new Promise((resolve, reject) => {
+    imageCanvas.toBlob(result => {
+      if (result) resolve(result)
+      else reject(new Error('Could not convert image element to PNG'))
+    }, 'image/png')
+  })
+  await communicateWithPrinter(blob)
+}
+
 function setup() {
   // A4-Proportionen. Mit pixelDensity(3) wird das PNG 3x so gross: schärferer Druck
   createCanvas(420, 594)
